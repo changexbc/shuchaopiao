@@ -1,0 +1,70 @@
+@charset "utf-8";
+//
+// Mixins
+// --------------------------------------------------
+
+
+// clearfix
+// --------------------------------------------------
+%clearfix{
+  &:before,
+  &:after {
+    display: table;
+    content: " ";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+
+// center-block
+// --------------------------------------------------
+%center-block{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+// text-overflow
+// --------------------------------------------------
+%text-overflow{
+    word-break:keep-all;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+
+
+
+
+// triangle
+// --------------------------------------------------
+@mixin triangle($direction, $size, $borderColor ) {
+  content:"";
+  height: 0;
+  width: 0;
+
+  @if $direction == top {
+    border-bottom:$size solid $borderColor;
+    border-left:$size dashed transparent;
+    border-right:$size dashed transparent;
+  } 
+  @else if $direction == right {
+    border-left:$size solid $borderColor;
+    border-top:$size dashed transparent;
+    border-bottom:$size dashed transparent;
+  } 
+  @else if $direction == bottom {
+    border-top:$size solid $borderColor;
+    border-left:$size dashed transparent;
+    border-right:$size dashed transparent;
+  } 
+  @else if $direction == left {
+    border-right:$size solid $borderColor;
+    border-top:$size dashed transparent;
+    border-bottom:$size dashed transparent;
+  }
+}

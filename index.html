@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;" name="viewport" />
+    <meta content="yes" name="apple-mobile-web-app-capable" />
+    <meta content="black" name="apple-mobile-web-app-status-bar-style" />
+    <meta content="telephone=no" name="format-detection" />
+    <title>会员卡</title>
+    <link rel="stylesheet" href="css/style.css"> 
+    <script src="js/zepto.min.js"></script>
+</head>
+
+<body>
+    <div class="shuchaopiao">
+        <section class="index page show">
+            <h1 class="people">
+                有<span class="people__num">123456</span>人数钱数到手抽筋
+            </h1>
+            <img src="images/11.png" height="483" width="454" alt="" class="hongbao">
+            <div class="title">
+                <img class="logo" src="images/10.png" alt="">
+                <img class="guang" src="images/9.png" alt="">
+            </div>
+            <div class="start">
+                <img class="arrow" src="images/2.png" alt="">
+                <img class="start__img" src="images/m0.png" alt="">
+            </div>
+        </section>
+        <section class="game page">
+            <h1 class="num-bar">
+                <div class="score">0</div>
+                <div class="time">"</div>
+            </h1>
+            <div class="money">
+                <img src="images/mb0.png" alt="">
+                <img class="money__move" src="images/m0.png" alt="">
+            </div>
+
+           <span class='rotate-money-wrap'><img class="rotate-money" src="images/d0.png" alt=""></span>
+           <span class='rotate-money-wrap'><img class="rotate-money" src="images/d0.png" alt=""></span>
+           <span class='rotate-money-wrap'><img class="rotate-money" src="images/d0.png" alt=""></span>
+           <span class='rotate-money-wrap'><img class="rotate-money" src="images/d0.png" alt=""></span>
+           <span class='rotate-money-wrap'><img class="rotate-money" src="images/d0.png" alt=""></span>
+        </section>
+        
+    </div>
+
+    <footer class="footer">
+        <img src="images/1.png" alt="">
+    </footer>
+
+    <div class="mask">
+        <div class="pop-box">
+            <img src="images/8.png" width="178" alt="">
+            <h1 class="your-score"></h1>
+            <p class="hb-explain">红包可抵套餐现金，抢的越多，抵的越多！</p>
+            <div class="phone-input">
+                <input type="tel" placeholder="请输入手机号">
+            </div>
+            <div class="phone-submit">提交手机号</div>
+            <div class="play-button">
+                <span id="replay">重玩</span>
+                <span>活动规则</span>
+                <span>我的红包</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var shuchaopiao = function(){
+            // variables
+            // 
+            var $money = $('.money')
+            var $money_move = $('.money__move')
+            var $score = $('.score')
+            var $time = $('.time')
+            var $mask = $('.mask')
+            var $your_score = $('.your-score')
+
+            var touchY
+            var movePos
+            var score = 0
+
+            // dom method
+            // 
+            
+            function countDown(time){
+                var timer = setInterval(function(){
+                    time--
+
+                    $time.text(time)
+                    if(time <= 0){
+                        clearInterval(timer);
+                        $mask.addClass('show')
+                        $your_score.text('￥ '+score)
+                    }
+                },1000)
+            }
+
+
+
+            function startFn(e){ 
+                movePos = 0
+                touchY = e.touches[0].pageY; 
+                $money_move.removeClass('transition show')  
+                $money_move.css({"-webkit-transform":"translate3d(0,0,0)"});      
+            }
+
+            function moveFn(e){   
+                movePos = e.touches[0].pageY - touchY;  
+                $money_move.addClass('show')   
+                $money_move.css("-webkit-transform","translate3d(0,"+ movePos +"px,0)");  
+                return false; 
+            }  
+         
+            function stopFn(e){ 
+                $money_move.addClass('transition')  
+                if(movePos < -30){
+                    $money_move.css("-webkit-transform","translate3d(0,-1000px,0)");  
+                    score = score + 100
+                    $score.text(score)
+                }
+                else{
+                    $money_move.css("-webkit-transform","translate3d(0,0,0)");  
+                }
+            }   
+
+            // event handler
+            // 
+            $money.on('touchstart',startFn); 
+            $money.on('touchmove',moveFn);  
+            $money.on('touchend',stopFn);
+
+            $('#replay').on('click',function(){
+                $mask.removeClass('show')
+                score = 0
+                $score.text(score)
+                countDown(10)
+            })
+
+            return {countDown : countDown}
+        }()
+
+        var indexjs = function(){
+            var $index = $('.index')
+            var $start_img = $('.start__img')
+            var touchY
+            var movePos
+            function startFn(e){ 
+                movePos = 0
+                touchY = e.touches[0].pageY;      
+            }
+
+            function moveFn(e){   
+                movePos = e.touches[0].pageY - touchY;  
+                $start_img.css("-webkit-transform","translate3d(0,"+ movePos +"px,0)");  
+                return false; 
+            }  
+         
+            function stopFn(e){ 
+                $start_img.addClass('transition')  
+                $start_img.css("-webkit-transform","translate3d(0,-1000px,0)");  
+                $index.off('touchstart'); 
+                $index.off('touchmove'); 
+                $index.off('touchend'); 
+                setTimeout(function(){
+                    $index.removeClass('show')
+                    $('.game').addClass('show')
+                    shuchaopiao.countDown(3)
+                    money_piaodong()
+                },350)
+            } 
+            $index.on('touchstart',startFn); 
+            $index.on('touchmove',moveFn);  
+            $index.on('touchend',stopFn);
+        }()
+
+        function money_piaodong(){
+            var $money_wrap = $('.rotate-money-wrap')
+            var $money_wrap2 = $('.rotate-money-wrap2')
+
+            function randomPos(){
+                $money_wrap.each(function(i){
+                    $money_wrap.eq(i)
+                    .removeClass('transition')
+                    .css({
+                        "-webkit-transform":"translate3d("+ parseInt(Math.random()*400) +"px,"+ parseInt(Math.random()*-300) +"px,0)"
+                    })
+                    .find('.rotate-money').css({
+                        '-webkit-animation-delay':parseInt(i*100*Math.random())+"ms",
+                        '-webkit-animation-name':"rotate",
+                        '-webkit-animation-timing-function': 'linear',
+                        '-webkit-animation-duration': '.6s',
+                        '-webkit-animation-iteration-count' :'infinite'
+                    })
+                    setTimeout(function(){
+                        $money_wrap
+                        .addClass('transition')
+                        .eq(i).css({
+                            "-webkit-transform":"translate3d("+ parseInt(Math.random()*400) +"px,1500px,0)"
+                        })
+                    },1000)
+                })
+                setTimeout(function(){
+                    randomPos()
+                },3000)
+            }
+            randomPos()
+        }
+    </script>
+</body>
+</html>
